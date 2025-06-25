@@ -14,5 +14,5 @@ int detect_circles_collision(RigidBody *c1, RigidBody* c2){
 }
 
 int detect_circle_line_collision(RigidBody *c, RigidBody *l){
-    Vec2 AB = Vec2 
+    
 }
