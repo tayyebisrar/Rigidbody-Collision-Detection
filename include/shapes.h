@@ -1,8 +1,11 @@
+#ifndef SHAPES_H
+#define SHAPES_H
 #include <stdio.h>
 #include <parts.h>
 
 typedef struct {
     float radius;
+    Vec2 center;
 }Circle;
 
 typedef struct {
@@ -29,7 +32,6 @@ typedef union {
 
 typedef struct{
     ShapeType type;
-    Vec2 position;
     Vec2 velocity;
     Vec2 acceleration;
     float rotation;
@@ -37,3 +39,5 @@ typedef struct{
     float mass;
     ShapeData shape;
  }RigidBody;
+
+#endif // SHAPES_H
