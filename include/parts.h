@@ -7,4 +7,7 @@ typedef struct{
     float y;
 }Vec2;
 
+typedef Vec2 Point;
+typedef Vec2 Vector2;
+
 #endif

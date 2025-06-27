@@ -5,16 +5,16 @@
 
 typedef struct {
     float radius;
-    Vec2 center;
+    Point center;
 }Circle;
 
 typedef struct {
-    Vec2 point1;
-    Vec2 point2;
+    Point point1;
+    Point point2;
 }Line;
 
 typedef struct {
-    Vec2* vertices;
+    Point* vertices;
     int vertexCount;
 }Polygon;
 
@@ -32,12 +32,12 @@ typedef union {
 
 typedef struct{
     ShapeType type;
-    Vec2 velocity;
-    Vec2 acceleration;
+    Vector2 velocity;
+    Vector2 acceleration;
     float rotation;
     float angularVelocity;
     float mass;
     ShapeData shape;
  }RigidBody;
 
-#endif // SHAPES_H
+#endif

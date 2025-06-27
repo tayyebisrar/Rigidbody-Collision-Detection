@@ -14,8 +14,8 @@ int detect_circles_collision(RigidBody *c1, RigidBody* c2){
 int detect_circle_line_collision(RigidBody *c, RigidBody *l){
     // shortest distance from circle centre to line should be less than or equal to circle radius
 
-    Vec2 AB = subtract_vectors(&(l->shape.line.point2), &(l->shape.line.point1)); // B - A vector
-    Vec2 AC = subtract_vectors(&(c->shape.circle.center), &(l->shape.line.point1)); // C - A vector
+    Vector2 AB = subtract_vec2s(&(l->shape.line.point2), &(l->shape.line.point1)); // B - A vector
+    Vector2 AC = subtract_vec2s(&(c->shape.circle.center), &(l->shape.line.point1)); // C - A vector
 
     // Project AC onto AB to find out how far along the line it lies (we just need the scalar, so won't use vector_project())
 
@@ -30,8 +30,8 @@ int detect_circle_line_collision(RigidBody *c, RigidBody *l){
         dist = vector_distance(&(l->shape.line.point1), &(c->shape.circle.center)); // vector_distance(A, C);
     }
     else if (t >= 0 && t <= 1) {
-        Vec2 AConAB = vector_project(&AC, &AB); // The vector produced by projecting AC on AB
-        Vec2 P = add_vectors(&(l->shape.line.point1), &AConAB);
+        Vector2 AConAB = vector_project(&AC, &AB); // The vector produced by projecting AC on AB
+        Point P = add_vec2s(&(l->shape.line.point1), &AConAB);
         dist = vector_distance(&(P), &(c->shape.circle.center));
     }
     else {
@@ -44,5 +44,18 @@ int detect_circle_line_collision(RigidBody *c, RigidBody *l){
     else{
         return 0; // no collision
     }
+
+}
+
+int detect_line_line_collision(RigidBody *l1, RigidBody *l2){
+    Vector2 A = subtract_vec2s(&(l1->shape.line.point2), &(l1->shape.line.point2)); // direction vector of l1
+    Vector2 B = subtract_vec2s(&(l2->shape.line.point2), &(l2->shape.line.point2)); // direction vector of l2
+
+    // Now each line can be defined by l1/l2.point1 + c(A/B) where c is a constant
+
+    // p = l2.p1 - l1.p1
+    Point p = subtract_vec2s(&(l2->shape.line.point1), &(l1->shape.line.point1));
+
+    // cross products of A and B (direction vectors), and 
 
 }
