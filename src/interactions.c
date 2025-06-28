@@ -51,11 +51,28 @@ int detect_line_line_collision(RigidBody *l1, RigidBody *l2){
     Vector2 A = subtract_vec2s(&(l1->shape.line.point2), &(l1->shape.line.point2)); // direction vector of l1
     Vector2 B = subtract_vec2s(&(l2->shape.line.point2), &(l2->shape.line.point2)); // direction vector of l2
 
-    // Now each line can be defined by l1/l2.point1 + c(A/B) where c is a constant
+    // Now each line can be defined by l1/l2.point1 + c(A/B) where c is an arbitrary constant
+    // l1: p + cA | l2: q + dB
 
-    // p = l2.p1 - l1.p1
-    Point p = subtract_vec2s(&(l2->shape.line.point1), &(l1->shape.line.point1));
+    // PQ = q-p = l2.p1 - l1.p1
+    Vector2 PQ = subtract_vec2s(&(l2->shape.line.point1), &(l1->shape.line.point1));
 
-    // cross products of A and B (direction vectors), and 
+    // cross products of A and B (direction vectors) to determine if line is parallel
+    float ABcross = vector_cross2d(&A, &B);
+    // cross products of A and PQ (direction and originals' direction) to determine if line is colinear (overlapping)
+    float AcrossPQ = vector_cross2d(&A, &PQ);
+
+    if (ABcross == 0) { // parallel
+        if (AcrossPQ == 0) { // also colinear with the start points' vector
+            return 1; // lines are overlapping, collision
+        }
+        else{
+            return 0; // lines are parallel, separated
+        }
+    }
+    else { // not parallel
+        
+    }
+    
 
 }
