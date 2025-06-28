@@ -48,31 +48,47 @@ int detect_circle_line_collision(RigidBody *c, RigidBody *l){
 }
 
 int detect_line_line_collision(RigidBody *l1, RigidBody *l2){
-    Vector2 A = subtract_vec2s(&(l1->shape.line.point2), &(l1->shape.line.point2)); // direction vector of l1
-    Vector2 B = subtract_vec2s(&(l2->shape.line.point2), &(l2->shape.line.point2)); // direction vector of l2
+    Vector2 AB = subtract_vec2s(&(l1->shape.line.point2), &(l1->shape.line.point1)); // direction vector of l1
+    Vector2 CD = subtract_vec2s(&(l2->shape.line.point2), &(l2->shape.line.point1)); // direction vector of l2
 
-    // Now each line can be defined by l1/l2.point1 + c(A/B) where c is an arbitrary constant
-    // l1: p + cA | l2: q + dB
+    // Now each line can be defined by l1/l2.point1 + c(A/B) where c is an arbitrary constant between 0 and 1
+    // l1: p + λA | l2: q + μB
 
     // PQ = q-p = l2.p1 - l1.p1
     Vector2 PQ = subtract_vec2s(&(l2->shape.line.point1), &(l1->shape.line.point1));
 
     // cross products of A and B (direction vectors) to determine if line is parallel
-    float ABcross = vector_cross2d(&A, &B);
+    float ABcrossCD = vector_cross2d(&AB, &CD);
     // cross products of A and PQ (direction and originals' direction) to determine if line is colinear (overlapping)
-    float AcrossPQ = vector_cross2d(&A, &PQ);
+    float ABcrossPQ = vector_cross2d(&AB, &PQ);
+    
+    
+    if (ABcrossCD == 0) { // parallel
+        if (ABcrossPQ == 0) { // also colinear with the start points' vector
+            // check for how much they overlap colinear
+            float lambda = vector_cross2d(&PQ, &CD)/vector_cross2d(&AB, &CD);
+            float mu = vector_cross2d(&PQ, &AB)/vector_cross2d(&AB, &CD);
 
-    if (ABcross == 0) { // parallel
-        if (AcrossPQ == 0) { // also colinear with the start points' vector
-            return 1; // lines are overlapping, collision
+            if (lambda >= 0 && lambda <= 1 && mu >= 0 && mu <= 1){
+                return 1; // intersection lies between the lines, collision!
+            }
+            else{
+                return 0; // intersection doesn't exist
+            }
         }
         else{
-            return 0; // lines are parallel, separated
+            return 0; // lines are parallel but separated  
         }
     }
-    else { // not parallel
-        
-    }
-    
+    else { // not parallel - can i just use the same code?
+        float lambda = vector_cross2d(&PQ, &CD)/vector_cross2d(&AB, &CD);
+        float mu = vector_cross2d(&PQ, &AB)/vector_cross2d(&AB, &CD);
 
+        if (lambda >= 0 && lambda <= 1 && mu >= 0 && mu <= 1){
+            return 1; // intersection lies between the lines, collision!
+        }
+        else{
+            return 0; // intersection doesn't exist
+        }
+    }
 }
