@@ -53,8 +53,8 @@ int detect_line_line_collision(RigidBody *l1, RigidBody *l2){
     Vector2 AB = subtract_vec2s(&(l1->shape.line.point2), &(l1->shape.line.point1)); // direction vector of l1
     Vector2 CD = subtract_vec2s(&(l2->shape.line.point2), &(l2->shape.line.point1)); // direction vector of l2
 
-    // Now each line can be defined by l1/l2.point1 + c(A/B) where c is an arbitrary constant between 0 and 1
-    // l1: p + λA | l2: q + μB
+    // Now each line can be defined by l1/l2.point1 + c(AB/CD) where c is an arbitrary constant between 0 and 1
+    // l1: p + λAB | l2: q + μCD
 
     // PQ = q-p = l2.p1 - l1.p1
     Vector2 PQ = subtract_vec2s(&(l2->shape.line.point1), &(l1->shape.line.point1));
@@ -65,18 +65,18 @@ int detect_line_line_collision(RigidBody *l1, RigidBody *l2){
     float ABcrossPQ = vector_cross2d(&AB, &PQ);
     
     
-    if (ABcrossCD < EPSILON) { // parallel - use epsilon for float inaccuracies
+    if (fabsf(ABcrossCD) < EPSILON) { // parallel - use epsilon for float inaccuracies
         if (ABcrossPQ < EPSILON) { // also colinear with the start points' vector   
             // project the colinear segments onto a single line (their direction, AB/CD/PQ)
 
-            Vector2 dir = unit_vec2(&AB); // unit vector for direction, means projection loses denominator and just leaves unit dot vector
-            // make sure all vectors lay along the line to accurately find endpoints w/ no distortion, so go from a0 (l1.p1) onwards
+            Vector2 colinear_dir = unit_vec2(&AB); // unit vector for direction, means projection loses denominator and just leaves unit dot vector
+            // make sure all points lay along the line to accurately find endpoints w/ no distortion, so go from a0 (l1.p1) onwards
             // or, to save computation, just go from the points themselves, since each vector is defined globally from the origin, and are all
-            // in the same direction (done below, double-check this)
-            float a0 = dot_product(&l1->shape.line.point1, &dir); 
-            float a1 = dot_product(&l1->shape.line.point2, &dir);
-            float b0 = dot_product(&l2->shape.line.point1, &dir);
-            float b1 = dot_product(&l2->shape.line.point2, &dir);
+            // in the same direction - creates 4 values representing where the points are
+            float a0 = dot_product(&l1->shape.line.point1, &colinear_dir); 
+            float a1 = dot_product(&l1->shape.line.point2, &colinear_dir);
+            float b0 = dot_product(&l2->shape.line.point1, &colinear_dir);
+            float b1 = dot_product(&l2->shape.line.point2, &colinear_dir);
 
             // determine if there is overlap
             float amin = fminf(a0, a1), amax = fmaxf(a0, a1);
@@ -99,6 +99,7 @@ int detect_line_line_collision(RigidBody *l1, RigidBody *l2){
 
         if (lambda >= 0 && lambda <= 1 && mu >= 0 && mu <= 1){
             return 1; // intersection lies between the lines, collision!
+            // collision point would be the intersection, or p + λAB/q + μCD
         }
         else{
             return 0; // intersection doesn't exist
