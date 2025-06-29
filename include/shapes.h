@@ -24,6 +24,16 @@ typedef enum {
     POLYGON
 }ShapeType;
 
+typedef enum {
+    RED,
+    ORANGE,
+    YELLOW,
+    GREEN,
+    BLUE,
+    PURPLE,
+    PINK
+}colour;
+
 typedef union {
     Circle circle;
     Line line;
@@ -38,6 +48,7 @@ typedef struct{
     float angularVelocity;
     float mass;
     ShapeData shape;
+    enum colour;
  }RigidBody;
 
 #endif

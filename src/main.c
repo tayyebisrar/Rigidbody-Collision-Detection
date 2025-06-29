@@ -1,11 +1,14 @@
 #include <stdio.h>
-#include <shapes.h>
+#include "shapes.h"
+#include "helpers.h"
 
 void display_vector(Vec2 *v);
 
 int main(void){
-    Vec2 test = {2.5, 5.2};
+    Vector2 test = {3, 4};
     display_vector(&test);
+    Vector2 unit_test = unit_vec2(&test);
+    display_vector(&unit_test);
     return 0;
 }
 

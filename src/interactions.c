@@ -3,6 +3,8 @@
 #include <shapes.h>
 #include <helpers.h>
 
+#define EPSILON 1e-9f
+
 int detect_circles_collision(RigidBody *c1, RigidBody* c2){
     // If distance between centres is less than sum of radii
     if (vector_distance(&(c1->shape.circle.center), &(c2->shape.circle.center)) <= c1->shape.circle.radius + c2->shape.circle.radius) {
@@ -63,24 +65,35 @@ int detect_line_line_collision(RigidBody *l1, RigidBody *l2){
     float ABcrossPQ = vector_cross2d(&AB, &PQ);
     
     
-    if (ABcrossCD == 0) { // parallel
-        if (ABcrossPQ == 0) { // also colinear with the start points' vector
-            // check for how much they overlap colinear
-            float lambda = vector_cross2d(&PQ, &CD)/vector_cross2d(&AB, &CD);
-            float mu = vector_cross2d(&PQ, &AB)/vector_cross2d(&AB, &CD);
+    if (ABcrossCD < EPSILON) { // parallel - use epsilon for float inaccuracies
+        if (ABcrossPQ < EPSILON) { // also colinear with the start points' vector   
+            // project the colinear segments onto a single line (their direction, AB/CD/PQ)
 
-            if (lambda >= 0 && lambda <= 1 && mu >= 0 && mu <= 1){
-                return 1; // intersection lies between the lines, collision!
+            Vector2 dir = unit_vec2(&AB); // unit vector for direction, means projection loses denominator and just leaves unit dot vector
+            // make sure all vectors lay along the line to accurately find endpoints w/ no distortion, so go from a0 (l1.p1) onwards
+            // or, to save computation, just go from the points themselves, since each vector is defined globally from the origin, and are all
+            // in the same direction (done below, double-check this)
+            float a0 = dot_product(&l1->shape.line.point1, &dir); 
+            float a1 = dot_product(&l1->shape.line.point2, &dir);
+            float b0 = dot_product(&l2->shape.line.point1, &dir);
+            float b1 = dot_product(&l2->shape.line.point2, &dir);
+
+            // determine if there is overlap
+            float amin = fminf(a0, a1), amax = fmaxf(a0, a1);
+            float bmin = fminf(b0, b1), bmax = fmaxf(b0, b1);
+
+            if (amax >= bmin && bmax >= amin){
+                return 1; // collision
             }
-            else{
-                return 0; // intersection doesn't exist
+            else{ // readability else
+                return 0; // no collision - lines are colinear but separated
             }
         }
         else{
             return 0; // lines are parallel but separated  
         }
     }
-    else { // not parallel - can i just use the same code?
+    else { // not parallel - evaluate for 
         float lambda = vector_cross2d(&PQ, &CD)/vector_cross2d(&AB, &CD);
         float mu = vector_cross2d(&PQ, &AB)/vector_cross2d(&AB, &CD);
 

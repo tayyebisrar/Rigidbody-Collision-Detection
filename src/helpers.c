@@ -35,3 +35,9 @@ float vector_cross2d(Vec2 *v1, Vec2 *v2){
     // ad-bc, cross product of 2 2d vectors
     return v1->x * v2->y - v2->x * v1->y;
 }
+
+Vector2 unit_vec2(Vector2 *v){
+    // determine the unit vector for a given 2d vector
+    float mag_mult = vector_magnitude(v);
+    return (Vec2){v->x / mag_mult, v->y / mag_mult};
+}
