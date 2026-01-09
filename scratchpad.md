@@ -1,3 +1,5 @@
+# Scratchpad, my thoughts
+
 Rigidbody physics engine in C
 
 Begin with shape representations
