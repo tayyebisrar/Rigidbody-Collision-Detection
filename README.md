@@ -1,26 +1,13 @@
-Rigidbody physics engine in C
+# Shape-Collision-Detection (C-Rigidbodies)
 
-Begin with shape representations
-Each shape needs
-Shape Type (circle, line,)
-Position
-Velocity
-Acceleration
-Mass
-Rotation
-(what else, if any?)
-Colour
+Minimal 2D rigid-body collision detection in C.
 
-Can use struct for each, with structs in a union when actually initialising a shape
+This repository contains simple geometric collision detection routines for:
 
-Need another file, interactions.c or something, for physics algorithms
+- Circle–circle collisions
+- Circle–line collisions
+- Line–line collisions
 
-collision_detect() -> will i need separate ones for all the different combinations of shapes (line-line, line-circle, etc)?
-gravity()?
-rotate()?
-
-rendering i can abstract for now and just use a library
-
-more complex shapes can be built from dots or something - i can look up on wikipedia how they are usually made
-
-prolly need to swap and use integrals to compute detection for complex stuff..
+All implemented from first principles using linear/vector algebra.  
+This is **not** a full physics engine: no constraint resolution, gravity, or impulse handling.  
+It is a small side experiment written for fun.
