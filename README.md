@@ -1,4 +1,4 @@
-# Shape-Collision-Detection (C-Rigidbodies)
+# Rigidbody-Collision-Detection (C-Rigidbodies)
 
 Minimal 2D rigid-body collision detection in C.
 
